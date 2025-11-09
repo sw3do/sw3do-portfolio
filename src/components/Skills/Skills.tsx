@@ -64,6 +64,7 @@ const skills = [
 
 const SkillsComponent = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const hasAnimated = useRef(false);
 
@@ -74,11 +75,12 @@ const SkillsComponent = () => {
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated.current) {
           setIsVisible(true);
+          setTimeout(() => setHasStarted(true), 100);
           hasAnimated.current = true;
           observer.disconnect();
         }
       },
-      { threshold: 0.1, rootMargin: "50px" },
+      { threshold: 0.05, rootMargin: "100px" },
     );
 
     const section = sectionRef.current;
@@ -191,29 +193,61 @@ const SkillsComponent = () => {
                             {skill.name}
                           </span>
                         </div>
-                        <span
-                          className={`text-xs sm:text-sm font-bold ${colorClasses.text} opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300`}
-                        >
-                          {skill.level}%
-                        </span>
-                      </div>
-
-                      {/* Progress Bar */}
-                      <div className="relative h-2 bg-white/5 rounded-full overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
+                        <motion.span
+                          initial={{ opacity: 0 }}
                           animate={
-                            isVisible
-                              ? { width: `${skill.level}%` }
-                              : { width: 0 }
+                            hasStarted
+                              ? { opacity: 1 }
+                              : { opacity: 0 }
                           }
                           transition={{
-                            duration: 1,
-                            delay: categoryIndex * 0.15 + skillIndex * 0.08,
-                            ease: "easeOut",
+                            duration: 0.3,
+                            delay: categoryIndex * 0.15 + skillIndex * 0.08 + 0.8,
                           }}
-                          className={`h-full ${colorClasses.bar} rounded-full`}
-                        />
+                          className={`text-xs sm:text-sm font-bold ${colorClasses.text}`}
+                        >
+                          {skill.level}%
+                        </motion.span>
+                      </div>
+
+                      <div className="relative h-2 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0, opacity: 0 }}
+                          animate={
+                            hasStarted
+                              ? { width: `${skill.level}%`, opacity: 1 }
+                              : { width: 0, opacity: 0 }
+                          }
+                          transition={{
+                            width: {
+                              duration: 1.2,
+                              delay: categoryIndex * 0.15 + skillIndex * 0.08,
+                              ease: [0.4, 0, 0.2, 1],
+                            },
+                            opacity: {
+                              duration: 0.3,
+                              delay: categoryIndex * 0.15 + skillIndex * 0.08,
+                            },
+                          }}
+                          className={`h-full ${colorClasses.bar} rounded-full relative`}
+                        >
+                          <motion.div
+                            className="absolute inset-0 bg-white/20"
+                            initial={{ x: "-100%" }}
+                            animate={
+                              hasStarted
+                                ? {
+                                    x: "100%",
+                                  }
+                                : { x: "-100%" }
+                            }
+                            transition={{
+                              duration: 1.5,
+                              delay: categoryIndex * 0.15 + skillIndex * 0.08,
+                              ease: "easeInOut",
+                            }}
+                          />
+                        </motion.div>
                       </div>
                     </div>
                   ))}
