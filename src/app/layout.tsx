@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout/ClientLayout";
+import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
 
@@ -36,6 +37,7 @@ export default function RootLayout({
           <SmoothScroll />
           <Navbar />
           {children}
+          <Footer />
         </ClientLayout>
       </body>
     </html>
