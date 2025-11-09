@@ -852,32 +852,31 @@ class InfiniteGridMenu {
       },
     );
 
+    const discProgram = this.discProgram;
+    if (!discProgram) {
+      throw new Error("Failed to create disc program");
+    }
+
     this.discLocations = {
-      aModelPosition: gl.getAttribLocation(this.discProgram!, "aModelPosition"),
-      aModelUvs: gl.getAttribLocation(this.discProgram!, "aModelUvs"),
-      aInstanceMatrix: gl.getAttribLocation(
-        this.discProgram!,
-        "aInstanceMatrix",
-      ),
-      uWorldMatrix: gl.getUniformLocation(this.discProgram!, "uWorldMatrix"),
-      uViewMatrix: gl.getUniformLocation(this.discProgram!, "uViewMatrix"),
+      aModelPosition: gl.getAttribLocation(discProgram, "aModelPosition"),
+      aModelUvs: gl.getAttribLocation(discProgram, "aModelUvs"),
+      aInstanceMatrix: gl.getAttribLocation(discProgram, "aInstanceMatrix"),
+      uWorldMatrix: gl.getUniformLocation(discProgram, "uWorldMatrix"),
+      uViewMatrix: gl.getUniformLocation(discProgram, "uViewMatrix"),
       uProjectionMatrix: gl.getUniformLocation(
-        this.discProgram!,
+        discProgram,
         "uProjectionMatrix",
       ),
-      uCameraPosition: gl.getUniformLocation(
-        this.discProgram!,
-        "uCameraPosition",
-      ),
-      uScaleFactor: gl.getUniformLocation(this.discProgram!, "uScaleFactor"),
+      uCameraPosition: gl.getUniformLocation(discProgram, "uCameraPosition"),
+      uScaleFactor: gl.getUniformLocation(discProgram, "uScaleFactor"),
       uRotationAxisVelocity: gl.getUniformLocation(
-        this.discProgram!,
+        discProgram,
         "uRotationAxisVelocity",
       ),
-      uTex: gl.getUniformLocation(this.discProgram!, "uTex"),
-      uFrames: gl.getUniformLocation(this.discProgram!, "uFrames"),
-      uItemCount: gl.getUniformLocation(this.discProgram!, "uItemCount"),
-      uAtlasSize: gl.getUniformLocation(this.discProgram!, "uAtlasSize"),
+      uTex: gl.getUniformLocation(discProgram, "uTex"),
+      uFrames: gl.getUniformLocation(discProgram, "uFrames"),
+      uItemCount: gl.getUniformLocation(discProgram, "uItemCount"),
+      uAtlasSize: gl.getUniformLocation(discProgram, "uAtlasSize"),
     };
 
     this.discGeo = new DiscGeometry(56, 1);
@@ -947,7 +946,10 @@ class InfiniteGridMenu {
     this.atlasSize = Math.ceil(Math.sqrt(itemCount));
     const cellSize = 512;
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2d context");
+    }
     canvas.width = this.atlasSize * cellSize;
     canvas.height = this.atlasSize * cellSize;
 
