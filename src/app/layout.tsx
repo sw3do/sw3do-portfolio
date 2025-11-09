@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import PageLoader from "@/components/Loader/PageLoader";
+import ClientLayout from "@/components/ClientLayout/ClientLayout";
 import Navbar from "@/components/Navbar/Navbar";
 import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
 
@@ -32,10 +32,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-linear-to-br from-[#000000] to-[#212121] min-h-screen font-(family-name:--font-inter)`}
       >
-        <SmoothScroll />
-        <PageLoader />
-        <Navbar />
-        {children}
+        <ClientLayout>
+          <SmoothScroll />
+          <Navbar />
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );
