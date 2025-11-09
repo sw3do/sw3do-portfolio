@@ -109,14 +109,14 @@ const ContactComponent = () => {
   });
 
   useEffect(() => {
-    if (!isDiscordOpen || !lanyardData?.listening_to_spotify) return;
+    if (!lanyardData?.listening_to_spotify) return;
 
     const interval = setInterval(() => {
       setCurrentTime(Date.now());
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isDiscordOpen, lanyardData?.listening_to_spotify]);
+  }, [lanyardData?.listening_to_spotify]);
 
   const spotifyProgress = useMemo(() => {
     if (!lanyardData?.spotify?.timestamps)
@@ -418,33 +418,19 @@ const ContactComponent = () => {
                     </div>
                   </button>
 
-                  <AnimatePresence>
+                  <AnimatePresence mode="wait">
                     {isDiscordOpen && !lanyardLoading && lanyardData && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0, scale: 0.95 }}
-                        animate={{ height: "auto", opacity: 1, scale: 1 }}
-                        exit={{ height: 0, opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <motion.div
-                          className="mt-4 bg-linear-to-br from-white/5 to-white/2 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
-                          initial={{ y: -20 }}
-                          animate={{ y: 0 }}
-                          transition={{ delay: 0.1, duration: 0.3 }}
-                        >
+                        <div className="mt-4 bg-linear-to-br from-white/5 to-white/2 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
                           <div className="px-4 sm:px-6 pt-5 pb-5">
                             <div className="flex items-start gap-4 mb-4">
-                              <motion.div
-                                className="relative"
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{
-                                  delay: 0.2,
-                                  type: "spring",
-                                  stiffness: 200,
-                                }}
-                              >
+                              <div className="relative">
                                 <Image
                                   src={`https://cdn.discordapp.com/avatars/${DISCORD_ID}/${lanyardData.discord_user.avatar}.${lanyardData.discord_user.avatar?.startsWith("a_") ? "gif" : "png"}?size=256`}
                                   alt="Discord Avatar"
@@ -452,31 +438,21 @@ const ContactComponent = () => {
                                   width={96}
                                   height={96}
                                 />
-                                <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  transition={{ delay: 0.4, type: "spring" }}
-                                >
-                                  <BsCircleFill
-                                    className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-4 border-gray-900 ${
-                                      lanyardData.discord_status === "online"
-                                        ? "text-green-500"
-                                        : lanyardData.discord_status === "idle"
-                                          ? "text-yellow-500"
-                                          : lanyardData.discord_status === "dnd"
-                                            ? "text-red-500"
-                                            : "text-gray-500"
-                                    }`}
-                                  />
-                                </motion.div>
-                              </motion.div>
+                                <BsCircleFill
+                                  className={`absolute bottom-0 right-0 w-6 h-6 rounded-full border-4 border-gray-900 ${
+                                    lanyardData.discord_status === "online"
+                                      ? "text-green-500"
+                                      : lanyardData.discord_status === "idle"
+                                        ? "text-yellow-500"
+                                        : lanyardData.discord_status === "dnd"
+                                          ? "text-red-500"
+                                          : "text-gray-500"
+                                  }`}
+                                />
+                              </div>
 
                               <div className="flex-1">
-                                <motion.div
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: 0.3 }}
-                                >
+                                <div>
                                   <h4 className="text-lg sm:text-xl font-bold text-white mb-1 flex items-center gap-2">
                                     {lanyardData.discord_user.username}
                                     {lanyardData.discord_user.discriminator !==
@@ -511,35 +487,25 @@ const ContactComponent = () => {
                                             : "Offline"}
                                     </span>
                                   </div>
-                                </motion.div>
+                                </div>
                               </div>
                             </div>
 
                             {lanyardData.kv &&
                               Object.keys(lanyardData.kv).length > 0 && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: 10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: 0.4 }}
-                                  className="mb-4 bg-gray-900/30 backdrop-blur-sm rounded-xl p-3 border border-white/10"
-                                >
+                                <div className="mb-4 bg-gray-900/30 backdrop-blur-sm rounded-xl p-3 border border-white/10">
                                   <h5 className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">
                                     Custom Status
                                   </h5>
                                   <p className="text-sm text-white">
                                     {Object.values(lanyardData.kv)[0] as string}
                                   </p>
-                                </motion.div>
+                                </div>
                               )}
 
                             {lanyardData.listening_to_spotify &&
                               lanyardData.spotify && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: 10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: 0.5 }}
-                                  className="mb-4 bg-linear-to-br from-green-500/20 to-green-600/10 backdrop-blur-sm border border-green-500/30 rounded-xl p-4 shadow-lg shadow-green-500/10"
-                                >
+                                <div className="mb-4 bg-linear-to-br from-green-500/20 to-green-600/10 backdrop-blur-sm border border-green-500/30 rounded-xl p-4 shadow-lg shadow-green-500/10">
                                   <div className="flex items-center gap-2 mb-3">
                                     <SiSpotify className="w-5 h-5 text-green-500" />
                                     <span className="text-xs font-bold text-green-400 uppercase tracking-wide">
@@ -586,17 +552,12 @@ const ContactComponent = () => {
                                       )}
                                     </div>
                                   </div>
-                                </motion.div>
+                                </div>
                               )}
 
                             {lanyardData.activities &&
                               lanyardData.activities.length > 0 && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: 10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: 0.6 }}
-                                  className="space-y-3"
-                                >
+                                <div className="space-y-3">
                                   {lanyardData.activities.map(
                                     (
                                       activity: LanyardActivity,
@@ -670,33 +631,23 @@ const ContactComponent = () => {
                                       );
                                     },
                                   )}
-                                </motion.div>
+                                </div>
                               )}
 
                             {(!lanyardData.activities ||
                               lanyardData.activities.length === 0) &&
                               !lanyardData.listening_to_spotify && (
-                                <motion.div
-                                  initial={{ opacity: 0 }}
-                                  animate={{ opacity: 1 }}
-                                  transition={{ delay: 0.5 }}
-                                  className="text-center py-8"
-                                >
+                                <div className="text-center py-8">
                                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-800/50 border border-gray-700 mb-3">
                                     <SiDiscord className="w-8 h-8 text-gray-600" />
                                   </div>
                                   <p className="text-sm text-gray-500">
                                     No activity right now
                                   </p>
-                                </motion.div>
+                                </div>
                               )}
 
-                            <motion.div
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: 0.7 }}
-                              className="mt-4 pt-4 border-t border-white/10"
-                            >
+                            <div className="mt-4 pt-4 border-t border-white/10">
                               <div className="flex items-center justify-between text-xs">
                                 <span className="text-gray-500">
                                   Discord ID
@@ -705,9 +656,9 @@ const ContactComponent = () => {
                                   {DISCORD_ID}
                                 </code>
                               </div>
-                            </motion.div>
+                            </div>
                           </div>
-                        </motion.div>
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
