@@ -2,6 +2,7 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import type React from "react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+
 //hello
 interface TimelineEntry {
   title: string;

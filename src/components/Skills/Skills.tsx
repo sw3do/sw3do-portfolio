@@ -195,14 +195,11 @@ const SkillsComponent = () => {
                         </div>
                         <motion.span
                           initial={{ opacity: 0 }}
-                          animate={
-                            hasStarted
-                              ? { opacity: 1 }
-                              : { opacity: 0 }
-                          }
+                          animate={hasStarted ? { opacity: 1 } : { opacity: 0 }}
                           transition={{
                             duration: 0.3,
-                            delay: categoryIndex * 0.15 + skillIndex * 0.08 + 0.8,
+                            delay:
+                              categoryIndex * 0.15 + skillIndex * 0.08 + 0.8,
                           }}
                           className={`text-xs sm:text-sm font-bold ${colorClasses.text}`}
                         >

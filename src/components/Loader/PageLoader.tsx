@@ -5,8 +5,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 function PageLoaderContent() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const _pathname = usePathname();
+  const _searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +18,9 @@ function PageLoaderContent() {
       setIsLoading(false);
     }
 
-    window.addEventListener("DOMContentLoaded", onContentLoaded, { once: true });
+    window.addEventListener("DOMContentLoaded", onContentLoaded, {
+      once: true,
+    });
     window.addEventListener("load", onFullLoad, { once: true });
 
     if (document.readyState === "complete") {
@@ -38,7 +40,7 @@ function PageLoaderContent() {
       return () => clearTimeout(t);
     });
     return () => cancelAnimationFrame(raf);
-  }, [pathname, searchParams]);
+  }, []);
 
   return (
     <AnimatePresence mode="wait">
@@ -83,7 +85,7 @@ function PageLoaderContent() {
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 className="w-24 h-24 rounded-full border-4 border-transparent border-t-cyan-400 border-r-cyan-400/50"
               />
-              
+
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
@@ -167,7 +169,7 @@ function PageLoaderContent() {
                   className="w-2 h-2 bg-pink-400 rounded-full"
                 />
               </div>
-              
+
               <motion.p
                 animate={{
                   opacity: [0.5, 1, 0.5],

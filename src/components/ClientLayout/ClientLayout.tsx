@@ -5,21 +5,21 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 function ClientLayoutContent({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const _pathname = usePathname();
+  const _searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    
+
     if (document.readyState === "complete") {
       setTimeout(() => setIsLoading(false), 300);
     } else {
       const handleLoad = () => {
         setTimeout(() => setIsLoading(false), 300);
       };
-      
+
       window.addEventListener("load", handleLoad, { once: true });
       return () => window.removeEventListener("load", handleLoad);
     }
@@ -27,11 +27,11 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isMounted) return;
-    
+
     setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
-  }, [pathname, searchParams, isMounted]);
+  }, [isMounted]);
 
   return (
     <>
@@ -58,9 +58,18 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
-                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <div className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                <div
+                  className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "0s" }}
+                />
+                <div
+                  className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                />
+                <div
+                  className="w-2 h-2 bg-pink-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.4s" }}
+                />
               </div>
             </div>
           </motion.div>
