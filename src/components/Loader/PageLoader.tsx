@@ -5,40 +5,40 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 function PageLoaderContent() {
-  const [isLoading, setIsLoading] = useState(false);
-  const _pathname = usePathname();
-  const _searchParams = useSearchParams();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    function onContentLoaded() {
+      setIsLoading(true);
+    }
+
+    function onFullLoad() {
+      setIsLoading(false);
+    }
+
+    window.addEventListener("DOMContentLoaded", onContentLoaded, { once: true });
+    window.addEventListener("load", onFullLoad, { once: true });
+
+    if (document.readyState === "complete") {
+      setIsLoading(false);
+    }
+
+    return () => {
+      window.removeEventListener("DOMContentLoaded", onContentLoaded);
+      window.removeEventListener("load", onFullLoad);
+    };
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading) return;
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [isLoading]);
-
-  useEffect(() => {
-    const handleComplete = () => setIsLoading(false);
-
-    if (typeof window !== "undefined") {
-      window.addEventListener("load", handleComplete, {
-        once: true,
-        passive: true,
-      });
-
-      if (document.readyState === "complete") {
-        setIsLoading(false);
-      }
-
-      return () => window.removeEventListener("load", handleComplete);
-    }
-  }, []);
+    const raf = requestAnimationFrame(() => {
+      const t = setTimeout(() => setIsLoading(false), 300);
+      return () => clearTimeout(t);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [pathname, searchParams]);
 
   return (
     <AnimatePresence mode="wait">
@@ -46,99 +46,141 @@ function PageLoaderContent() {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-999 flex items-center justify-center bg-linear-to-br from-[#000000] to-[#212121]"
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="fixed inset-0 z-9999 flex items-center justify-center bg-linear-to-br from-gray-900 via-black to-gray-900"
         >
-          <div className="relative flex flex-col items-center gap-12">
-            <div className="relative w-32 h-32">
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{
+                scale: [1.2, 1, 1.2],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
+            />
+          </div>
+
+          <div className="relative flex flex-col items-center gap-8">
+            <div className="relative">
               <motion.div
-                className="absolute inset-0 border-4 border-transparent border-t-cyan-500 border-r-blue-500 rounded-full"
                 animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "linear",
-                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="w-24 h-24 rounded-full border-4 border-transparent border-t-cyan-400 border-r-cyan-400/50"
+              />
+              
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 w-24 h-24 rounded-full border-4 border-transparent border-b-purple-500 border-l-purple-500/50"
               />
 
               <motion.div
-                className="absolute inset-2 border-4 border-transparent border-b-purple-500 border-l-pink-500 rounded-full"
-                animate={{ rotate: -360 }}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 1, 0.5],
+                }}
                 transition={{
                   duration: 2,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "linear",
+                  repeat: Infinity,
+                  ease: "easeInOut",
                 }}
-              />
-
-              <motion.div
                 className="absolute inset-0 flex items-center justify-center"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{
-                  delay: 0.2,
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 10,
-                }}
               >
-                <motion.span
-                  className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-cyan-400 via-blue-500 to-purple-600"
-                  animate={{
-                    scale: [1, 1.05, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                >
-                  sw3do
-                </motion.span>
+                <div className="w-12 h-12 bg-linear-to-br from-cyan-400 to-purple-500 rounded-full blur-xl" />
               </motion.div>
 
               <motion.div
-                className="absolute -inset-4 bg-linear-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 rounded-full blur-xl"
                 animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.6, 0.3],
+                  rotate: 360,
                 }}
                 transition={{
-                  duration: 2,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear",
                 }}
-              />
+                className="absolute -inset-4"
+              >
+                <div className="w-full h-full border-2 border-dashed border-cyan-400/20 rounded-full" />
+              </motion.div>
             </div>
 
             <motion.div
-              className="flex flex-col items-center gap-3"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex flex-col items-center gap-3"
             >
-              <motion.div className="flex gap-2">
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="w-2 h-2 bg-linear-to-r from-cyan-400 to-blue-500 rounded-full"
-                    animate={{
-                      y: [0, -10, 0],
-                      opacity: [0.5, 1, 0.5],
-                    }}
-                    transition={{
-                      duration: 0.8,
-                      repeat: Number.POSITIVE_INFINITY,
-                      delay: i * 0.2,
-                      ease: "easeInOut",
-                    }}
-                  />
-                ))}
-              </motion.div>
-
-              <span className="text-gray-400 text-sm font-medium tracking-wider">
-                Loading
-              </span>
+              <div className="flex items-center gap-2">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [1, 0.5, 1],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0,
+                  }}
+                  className="w-2 h-2 bg-cyan-400 rounded-full"
+                />
+                <motion.div
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [1, 0.5, 1],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.2,
+                  }}
+                  className="w-2 h-2 bg-purple-400 rounded-full"
+                />
+                <motion.div
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [1, 0.5, 1],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.4,
+                  }}
+                  className="w-2 h-2 bg-pink-400 rounded-full"
+                />
+              </div>
+              
+              <motion.p
+                animate={{
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="text-sm font-medium text-gray-400"
+              >
+                Loading...
+              </motion.p>
             </motion.div>
           </div>
         </motion.div>
